@@ -31,7 +31,7 @@ class PyMapFilter(object):
                         sys.stdout.write('.')
                     print('moved %d messages' % len(messages))
         except Exception as e:
-            pass
+            print('An error occured!')
             # raise e
         self.imap_server.close()
         self.imap_server.logout()
