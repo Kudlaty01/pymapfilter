@@ -31,9 +31,8 @@ class PyMapFilter(object):
         try:
             imap_server.select()
             for target in account.redirections:
-                print('moving to:\t%s' % target)
                 for redir in account.redirections[target]:
-                    print('processing query:\t%s' % redir)
+                    print('processing:\t%s\t=>\t%s ' % (redir,target))
                     typ, data = imap_server.search(None, redir)
                     messages = data[0].split()
                     for msg in messages:
