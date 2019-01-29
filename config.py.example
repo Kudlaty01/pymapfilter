@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+import keyring # for safer password storage
+from datetime import datetime, timedelta # for date constraining messages to be moved
+from mailaccount import MailAccount # configuration account class
+
+today = datetime.now()
+monthAgo = today - timedelta(days=30)
+formattedMonthAgo = monthAgo.strftime('%d-%b-%Y')
+
+gmail_account = MailAccount(
+        server= 'imap.gmail.com',
+        login= 'account@gmail.com',
+        password= keyring.get_password('priv','gmail_account'),
+        ssl= 'tls1',
+        redirections= {
+            "[Gmail]/Spam": [
+                '(FROM spammer@spambase.com SINCE %s)' % formattedMonthAgo, # only recent spam removal
+                '(FROM spammer@spamcity.com)' # another spam source
+                ]
+            }
+        )
+
+ru_account = MailAccount(
+        server= 'imap.mail.ru',
+        login= 'account@mail.ru',
+        password= keyring.get_password('priv','ru_account'),
+        ssl= 'tls1',
+        redirections= {
+            "Спам": [
+                '(FROM spammer@spambase.com SINCE %s)' % formattedMonthAgo, # same spammers here
+                '(FROM spammer@spamcity.com)' # no comment for that
+                ]
+            }
+        )
+
+accounts = [
+        gmail_account,
+        ru_account
+        ]
