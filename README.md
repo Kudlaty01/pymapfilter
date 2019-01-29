@@ -1,6 +1,6 @@
 # pymapfilter
 Python-powered substitution for common mail services filtering features (often limited).
-Created out of frustration with no luck in SSL/TLS connecting to one of mail servers with a lua utility.
+Created out of frustration with no luck in SSL/TLS connecting to one of mail servers with a popular lua utility.
 
 ## Requirements
 - python3
