@@ -8,7 +8,8 @@ from ssl_protocols import ssl_protocols
 class PyMapFilter(object):
     """class for mail filtering based on accounts"""
     def __init__(self, account):
-        """protocols initialization"""
+        """protocols initialization
+        account: MailAccount configuration"""
         self.account = account
         pass
 
