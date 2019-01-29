@@ -7,7 +7,8 @@ class MailAccount(object):
         password: mail account password
         port: optional port (default 993)
         ssl: one of the SSL dict keys (default 'tls1')
-        redirections: (a dict) where to move selected mail in format Target -> [array of conditions]"""
+        redirections: (a dict) where to move selected mail in format Target -> [array of conditions]
+        Useful link about conditions (search criteria): http://tools.ietf.org/html/rfc3501#section-6.4.4"""
         self.server = server
         self.login = login
         self.password = password
