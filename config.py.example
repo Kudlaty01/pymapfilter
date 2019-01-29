@@ -25,7 +25,7 @@ gmail_account = MailAccount(
         name= 'gmail example account',
         server= 'imap.gmail.com',
         login= 'account@gmail.com',
-        password= keyring.get_password('priv','gmail_account'),
+        password= 'my real life password',
         ssl= 'tls1',
         redirections= {
             "[Gmail]/Spam": [
