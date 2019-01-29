@@ -7,11 +7,11 @@ from ssl_protocols import ssl_protocols
 
 class PyMapFilter(object):
     """class for mail filtering based on accounts"""
-    def __init__(self):
+    def __init__(self, account):
         """protocols initialization"""
         pass
 
-    def filterAccount(self, account):
+    def filterAccount(self):
         """filter configured account by it's redirections"""
         sslC = SSLContext(ssl_protocols[account.ssl])
 
@@ -36,7 +36,8 @@ class PyMapFilter(object):
         self.imap_server.close()
         self.imap_server.logout()
 
-if __name__ == "__main__":
+def main(argv):
+    """main function to be executed id file run from command line"""
     print("let's process some messages!")
     pymap_filter = PyMapFilter()
     for account in accounts:
@@ -44,3 +45,7 @@ if __name__ == "__main__":
             print("Now processing: %s" % account.name)
         pymap_filter.filterAccount(account)
     print("all done!")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
