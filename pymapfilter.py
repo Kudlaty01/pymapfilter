@@ -33,12 +33,21 @@ class PyMapFilter(object):
             imap_server.select()
             for target in account.redirections:
                 for redir in account.redirections[target]:
+                    if not isinstance(redir, list):
+                        redir = [redir]
                     print('processing:\t%s\t=>\t%s ' % (redir,target))
-                    typ, data = imap_server.search(None, redir)
+                    typ, data = imap_server.search(None, redir[0])
+                    print(data)
                     messages = data[0].split()
                     for msg in messages:
+                        try:
+                            print(redir[1])
+                            if(any(redir[1][criterion].lower() not in imap_server.fetch(msg, '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion).lower() for criterion in redir[1])):
+                                continue
+                        except Exception as e:
+                            pass
                         imap_server.copy(msg, target)
-                        imap_server.store(msg, '+FLAGS', '\\Deleted')
+                        imap_server.store(msg, '+FLAGS', '\\Deleted'
                         sys.stdout.write('.')
                     print('moved %d messages' % len(messages))
         except Exception as e:
