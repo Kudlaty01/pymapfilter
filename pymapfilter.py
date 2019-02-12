@@ -41,13 +41,12 @@ class PyMapFilter(object):
                     messages = data[0].split()
                     for msg in messages:
                         try:
-                            print(redir[1])
                             if(any(redir[1][criterion].lower() not in imap_server.fetch(msg, '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion).lower() for criterion in redir[1])):
                                 continue
                         except Exception as e:
                             pass
                         imap_server.copy(msg, target)
-                        imap_server.store(msg, '+FLAGS', '\\Deleted'
+                        imap_server.store(msg, '+FLAGS', '\\Deleted')
                         sys.stdout.write('.')
                     print('moved %d messages' % len(messages))
         except Exception as e:
