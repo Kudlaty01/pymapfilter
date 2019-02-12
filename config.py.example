@@ -16,7 +16,7 @@ ru_account = MailAccount(
         redirections= {
             "Спам": [
                 '(FROM spammer@spambase.com SINCE %s)' % formattedMonthAgo, # same spammers here
-                '(FROM spammer@spamcity.com)' # no comment for that
+                ['(FROM spammer@spamcity.com)', {'TO': 'Spem receiver'}]# an example with explicit fields matching on filtered result set
                 ]
             }
         )
