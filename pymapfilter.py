@@ -44,7 +44,8 @@ class PyMapFilter(object):
                             if(any(redir[1][criterion].lower() not in imap_server.fetch(msg, '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion).lower() for criterion in redir[1])):
                                 continue
                         except Exception as e:
-                            pass
+                            print('error: ')
+                            print(e)
                         imap_server.copy(msg, target)
                         imap_server.store(msg, '+FLAGS', '\\Deleted')
                         sys.stdout.write('.')
