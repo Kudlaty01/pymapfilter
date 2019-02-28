@@ -38,6 +38,7 @@ class PyMapFilter(object):
                     print('processing:\t%s\t=>\t%s ' % (redir,target))
                     typ, data = imap_server.search(None, redir[0])
                     print(data)
+                    moved = 0
                     messages = data[0].split()
                     for msg in messages:
                         try:
@@ -53,8 +54,9 @@ class PyMapFilter(object):
                             print(e)
                         imap_server.copy(msg, target)
                         imap_server.store(msg, '+FLAGS', '\\Deleted')
+                        moved += 1
                         sys.stdout.write('.')
-                    print('moved %d messages' % len(messages))
+                    print('moved %d messages' % moved)
         except Exception as e:
             print('An error occured!')
             # raise e
