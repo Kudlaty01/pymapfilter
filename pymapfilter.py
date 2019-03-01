@@ -42,12 +42,16 @@ class PyMapFilter(object):
                     messages = data[0].split()
                     for msg in messages:
                         try:
-                            if(any(redir[1][criterion].lower()
-                                not in imap_server.fetch(
-                                    msg,
-                                    '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion
-                                    )[1][0][1].decode("utf-8").lower()
-                                for criterion in redir[1])):
+                            if(any(
+                                all(
+                                    redir[1][criterion].lower() not in fetched_field.decode("utf-8").lower()
+                                    for fetched_field in imap_server.fetch(
+                                        msg,
+                                        '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion
+                                        )[1][0]
+                                    )
+                                for criterion in redir[1]
+                                )):
                                 continue
                         except Exception as e:
                             print('error: ')
