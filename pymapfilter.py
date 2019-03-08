@@ -41,6 +41,7 @@ class PyMapFilter(object):
                     moved = 0
                     messages = data[0].split()
                     for msg in messages:
+                        sys.stdout.write('.')
                         try:
                             if(len(redir) > 1 and any(
                                 all(
@@ -60,7 +61,6 @@ class PyMapFilter(object):
                         imap_server.copy(msg, target)
                         imap_server.store(msg, '+FLAGS', '\\Deleted')
                         moved += 1
-                        sys.stdout.write('.')
                     print('moved %d messages' % moved)
         except Exception as e:
             print('An error occured!')
