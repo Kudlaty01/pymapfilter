@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys
+import sys, asyncio
 from imaplib import IMAP4_SSL
 from config import *
 from ssl import SSLContext
@@ -24,6 +24,28 @@ class PyMapFilter(object):
             self.imap_server.login(account.login, account.password)
         return self.imap_server
 
+    async def _process_message(self, imap_server, msg, redir, target):
+        """process all messages asynchronously"""
+        sys.stdout.write('.')
+        try:
+            if(len(redir) > 1 and any(
+                all(
+                    redir[1][criterion].lower() not in fetched_field.decode("utf-8").lower()
+                    for fetched_field in imap_server.fetch(
+                        msg,
+                        '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion
+                        )[1][0]
+                    )
+                for criterion in redir[1]
+                )):
+                return 0
+        except Exception as e:
+            print('error: ')
+            print(e)
+            return 0
+        imap_server.copy(msg, target)
+        imap_server.store(msg, '+FLAGS', '\\Deleted')
+        return 1
 
     def filterAccount(self):
         """filter configured account by it's redirections"""
@@ -38,30 +60,12 @@ class PyMapFilter(object):
                     print('processing:\t%s\t=>\t%s ' % (redir,target))
                     typ, data = imap_server.search(None, redir[0])
                     print(data)
-                    moved = 0
                     messages = data[0].split()
-                    for msg in messages:
-                        sys.stdout.write('.')
-                        try:
-                            if(len(redir) > 1 and any(
-                                all(
-                                    redir[1][criterion].lower() not in fetched_field.decode("utf-8").lower()
-                                    for fetched_field in imap_server.fetch(
-                                        msg,
-                                        '(UID BODY.PEEK[HEADER.FIELDS (%s)])' % criterion
-                                        )[1][0]
-                                    )
-                                for criterion in redir[1]
-                                )):
-                                continue
-                        except Exception as e:
-                            print('error: ')
-                            print(e)
-                            continue
-                        imap_server.copy(msg, target)
-                        imap_server.store(msg, '+FLAGS', '\\Deleted')
-                        moved += 1
-                    print('moved %d messages' % moved)
+                    processes = [self._process_message(imap_server, msg, redir, target) for msg in messages]
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    moved = loop.run_until_complete(asyncio.gather(*processes))
+                    print('moved %d messages' % sum(moved))
         except Exception as e:
             print('An error occured!')
             # raise e
